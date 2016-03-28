@@ -36,7 +36,7 @@ app.post('/addFormula',function(req,res){
 
 
 
-var port =process.env.PORT || 8080;
+var port = process.env.PORT || 8080;
 app.use('/',express.static('./public')).listen(port);
 console.log("listening on port " + port +"\n");
 
