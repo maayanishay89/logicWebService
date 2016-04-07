@@ -40,11 +40,12 @@ function addFormula(addFormula,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					//console.log(JSON.stringify(matcher_grade));
+					console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);
 				});
 			} 		
 		});
+
 
 		// locations
 		caclulateDistance(obj, function(result) {
@@ -115,169 +116,215 @@ function addFormula(addFormula,callback){
 
  function calculateRequirements(obj, callback){
 
- 	var employer_must=[];
-	var employer_or=[];
-	var employer_adv=[];
+console.log("im innnnnnnnnnn");
+	var employer=[];
 	var employee = [];
-	var grade_result = 0;
-	var total = 0;
+	var total_combination=[];
+	var combination =[];
+	var grades_of_combinations = [];
+
+	var the_biggest_result={
+		"grade": 0,
+		"index": 0
+	};
+	var comb = {
+		"name": null,
+		"grade": null
+	}
+	var requirements_result = {
+		"details":[],
+		"grade":null
+    }
 
 
-//data from the employer
+	// data from the job seeker
+	for (var i = 0; i < obj.cv.requirements[0].combination.length; i++) {
+		employee.push(obj.cv.requirements[0].combination[i]);	
+	};
 
-		for (var i = 0; i < obj.job.requirements.length; i++) {
+ // var combination = [
+	//  	{
+	//  		"must":[{"name":"c++","years":1,"mode":"must","percentage":80},{"name":"c","years":3,"mode":"must","percentage":20}],
+	//  		"or":[{"name":"java","years":0,"mode":"or","percentage":null},{"name":"html","years":0,"mode":"or","percentage":null}],
+	//  		"adv":[{"name":"c#","years":1,"mode":"adv","percentage":null},{"name":"js","years":2,"mode":"adv","percentage":null},{"name":"angular","years":1,"mode":"adv","percentage":null}]
+	//  	},
+	//  	{
+	//  		"must":[{"name":"c++","years":3,"mode":"must","percentage":80},{"name":"c","years":1,"mode":"must","percentage":20}],
+	//  		"or":[{"name":"java","years":2,"mode":"or","percentage":null},{"name":"html","years":2,"mode":"or","percentage":null}],
+	//  		"adv":[{"name":"c#","years":2,"mode":"adv","percentage":null},{"name":"js","years":1,"mode":"adv","percentage":null},{"name":"angular","years":2,"mode":"adv","percentage":null}]
+	//  	}
+ 	// ]
 
-				if(obj.job.requirements[i].mode == "must") {
-					employer_must.push(obj.job.requirements[i]);
+
+
+	// how many combination there is in employer array
+
+	for (var i = 0; i < obj.job.requirements.length; i++) {	
+
+		var tmp_must = [];
+		var tmp_or = [];
+		var tmp_adv = [];
+
+		for (var j = 0; j < obj.job.requirements[i].combination.length; j++) {
+
+				if(obj.job.requirements[i].combination[j].mode == "must") {
+					tmp_must.push(obj.job.requirements[i].combination[j]);
 				}
-				if(obj.job.requirements[i].mode == "or") {
-					employer_or.push(obj.job.requirements[i]);
+
+				if(obj.job.requirements[i].combination[j].mode == "or") {
+					tmp_or.push(obj.job.requirements[i].combination[j]);
 				}
-				if(obj.job.requirements[i].mode == "adv") {
-					employer_adv.push(obj.job.requirements[i]);
+
+				if(obj.job.requirements[i].combination[j].mode == "adv") {
+					tmp_adv.push(obj.job.requirements[i].combination[j]);
 				}
 		};
-
-		// add field "grade" to the employer_must json struct
-
-		for (var i = 0; i < employer_must.length; i++) {
-			employer_must[i].grade = null;
-		};
-
-		// data from the job seeker
-
-		for (var i = 0; i < obj.cv.requirements.length; i++) {
-			employee.push(obj.cv.requirements[i]);	
-		};
-
-		// add field "type" to the json struct
-
-		for (var i = 0; i < employee.length; i++) {
-			employee[i].type = null;
-		};
-
-		// add field "grade" to the employee json struct
-
-		for (var i = 0; i < employee.length; i++) {
-			employee[i].grade = null;
-		};
+		combination.push({
+			"must":tmp_must,
+			"or":tmp_or,
+			"adv":tmp_adv
+		});
+	};
 
 
-		var must = employer_must.length;
-		var adv = employer_adv.length;
-		var or = employer_or.length;
+	for (var c = 0; c < combination.length; c++) {
 
-		if (or > 0){
-			adv = adv + or - 1;
-			must = must + 1;
-		}
+			var employer_must=[];
+			var employer_or=[];
+			var employer_adv=[];
+			var grade_result = 0;
+			var total = 0;
+			var counter = 0;
+			
+			//data from the employer
 
-		var temp = 100 / (adv + must);
-		var grade_per_adv = temp / 2;
-		var grade_per_must = ((grade_per_adv * adv) / must) + temp;
+			for (var b = 0; b < combination[c].must.length; b++) {
+				employer_must.push(combination[c].must[b]);
+			};
+			for (var b = 0; b < combination[c].or.length; b++) {
+				employer_or.push(combination[c].or[b]);
+			};
+			for (var b = 0; b < combination[c].adv.length; b++) {
+				employer_adv.push(combination[c].adv[b]);
+			};
 
 
-		for (var i = 0; i < employer_must.length; i++) {
-		 	employer_must[i].grade = ((employer_must[i].percentage)/100) * (employer_must.length * grade_per_must);
-		 }; 
 
-		
-		for (var i = 0; i < employer_must.length; i++) {
-			for (var j = 0; j < employee.length; j++) {
-				if(employer_must[i].name == employee[j].name){
-					if(employer_must[i].years == 0) {
-						employee[j].years = 1;
-						employee[j].type = "m";
-					}
-					else {
-						employee[j].years = employee[j].years / employer_must[i].years;
-						employee[j].type = "m";
+			// add field "grade" to the employer_must json struct
+			for (var i = 0; i < employer_must.length; i++) {
+				employer_must[i].grade = null;
+			};
+
+
+			var must = employer_must.length;
+			var adv = employer_adv.length;
+			var or = employer_or.length;
+
+			if (or > 0){
+				adv = adv + or - 1;
+				must = must + 1;
+			}
+
+			var temp = 100 / (adv + must);
+			var grade_per_adv = temp / 2;
+			var grade_per_must = ((grade_per_adv * adv) / must) + temp;
+
+
+			for (var a = 0; a < employer_must.length; a++) {
+			 	employer_must[a].grade = ((employer_must[a].percentage)/100) * (employer_must.length * grade_per_must);
+			 }; 
+
+
+			for (var i = 0; i < employer_must.length; i++) {
+				for (var j = 0; j < employee.length; j++) {
+					if(employer_must[i].name == employee[j].name){
+						if(employer_must[i].years == 0) {
+							employee[j].years = 1;
+						}
+						else {
+							employee[j].years = employee[j].years / employer_must[i].years;
+						}
+						employee[j].mode = "must";
+						employee[j].grade = (employee[j].years * employer_must[i].grade);
+					};
+				};	
+			};
+
+			for (var i = 0; i < employer_or.length; i++) {
+				for (var j = 0; j < employee.length; j++) {
+					if(employer_or[i].name == employee[j].name){
+						if(employer_or[i].years == 0) {
+							employee[j].years = 1;
+						}
+						else {
+							employee[j].years = employee[j].years / employer_or[i].years;
+						}
+						employee[j].mode = "or";
+						employee[j].grade = employee[j].years * grade_per_adv;
+					};
+				};	
+			};
+
+			for (var i = 0; i < employer_adv.length; i++) {
+				for (var j = 0; j < employee.length; j++) {
+					if(employer_adv[i].name == employee[j].name){
+						if(employer_adv[i].years == 0) {
+							employee[j].years = 1;
+						}
+						else {
+							employee[j].years = employee[j].years / employer_adv[i].years;
+						}
+						employee[j].mode = "adv";
+						employee[j].grade = employee[j].years * grade_per_adv;
+					};
+				};	
+			};
+
+
+			for (i=0; i < employee.length; i++)
+			{
+				var comb ={	
+							"name": employee[i].name,
+							"grade": employee[i].grade,
+							"combination_index":c
+				}
+			total_combination.push(comb);
+			}
+
+	};
+
+			for (var j = 0; j < total_combination[total_combination.length -1].combination_index +1; j++) {
+				var sum = 0;
+				for (var i = 0; i < total_combination.length; i++) {
+					if(total_combination[i].combination_index == j) {
+						//console.log("total_combination[i].combination_index: "+total_combination[i].combination_index);
+						//console.log("j: "+j);
+						sum += total_combination[i].grade;
 					}
 				};
-			};	
-		};
+				grades_of_combinations.push(sum);
+			};
 
-		for (var i = 0; i < employer_or.length; i++) {
-			for (var j = 0; j < employee.length; j++) {
-				if(employer_or[i].name == employee[j].name){
-					if(employer_or[i].years == 0) {
-						employee[j].years = 1;
-						employee[j].type = "o";
-					}
-					else {
-						employee[j].years = employee[j].years / employer_or[i].years;
-						employee[j].type = "o";
-					}
-				};
-			};	
-		};
-
-		for (var i = 0; i < employer_adv.length; i++) {
-			for (var j = 0; j < employee.length; j++) {
-				if(employer_adv[i].name == employee[j].name){
-					if(employer_adv[i].years == 0) {
-						employee[j].years = 1;
-						employee[j].type = "a";
-					}
-					else {
-						employee[j].years = employee[j].years / employer_adv[i].years;
-						employee[j].type = "a";
-					}
-				};
-			};	
-		};
-
-
-		for (var i = 0; i < employee.length; i++) {
-			for (var j = 0; j < employer_must.length; j++) {
-				if(employee[i].name == employer_must[j].name) {
-					grade_result = employee[i].years * employer_must[j].grade;
-					employee[i].grade = grade_result;
+			for (var i = 0; i < grades_of_combinations.length; i++) {
+				if(grades_of_combinations[i]> the_biggest_result.grade){
+					the_biggest_result.grade = grades_of_combinations[i];
+					the_biggest_result.index = i; 
 				}
 			};
-		};
-		
 
-		for (var i = 0; i < employee.length; i++) {
 
-				if(employee[i].type == "a") {
-					grade_result = employee[i].years * grade_per_adv;
-					employee[i].grade = grade_result;
+			for (var i = 0; i < total_combination.length; i++) {
+				if (total_combination[i].combination_index == the_biggest_result.index ) {
+					requirements_result.details.push(total_combination[i]);	
 				}
+			};
 
-				if(employee[i].type == "o") {
-					grade_result = employee[i].years * grade_per_adv;
-					employee[i].grade = grade_result;
-				}	
-			
-		};
+			requirements_result.grade = the_biggest_result.grade;
 
-		var requirements_result = {
-									 "details":[],
-								     "grade":null
-								  }
+			//console.log(requirements_result);
 
-		for (i=0; i < employee.length; i++)
-		{
-			total += employee[i].grade; //requirements_result.grade- changeeeeee
-		}
 
-		for (i=0; i < employee.length; i++)
-		{
-			var detailsTmp ={	
-						"name": employee[i].name,
-						"grade": employee[i].grade
-			}
-			requirements_result.details.push(detailsTmp);
-		}
-
-		requirements_result.grade = total;
-
-		//console.log(requirements_result);
-
-		//console.log("requirements_result: " +requirements_result);
-		callback(requirements_result);
-
+callback(requirements_result);
  }
 
 
