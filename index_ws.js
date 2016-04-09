@@ -1,9 +1,10 @@
-var express = require('./node_modules/express');
-var url = require('url');
-var app = express();
-var bodyParser = require('./node_modules/body-parser');
+var express = require('express');
+var bodyParser = require('body-parser');
 var Controller = require('./controller');
-//var matchingObjectController = require('./matchingObjectController');
+
+var app = express();
+
+app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -11,32 +12,22 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(bodyParser());
-
 app.get('/',function (req,res){
 	res.send("Welcome");
 });
 
-
-
-
 app.post('/addFormula',function(req,res){
 
 	console.log("Im in addFormula post");
+	console.log("formula" , req.body);
 	var formula = JSON.stringify(req.body);
 
-		Controller.addFormula(formula,function(formula){
+	Controller.addFormula(formula,function(formula){
 		res.json(formula);
-		});
+	});
 });
 
-
-
-
-
-
-
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8005;
 app.use('/',express.static('./public')).listen(port);
 console.log("listening on port " + port +"\n");
 
