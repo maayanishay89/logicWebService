@@ -25,7 +25,6 @@ function addFormula(addFormula,callback){
 
 		// requirements
 		calculateRequirements(obj, function(result){
-			//console.log(result.details);
 			match.push(result.grade * (obj.job.formula.requirements / 100));
 			matcher_grade.formula.requirements.grade = result.grade * (obj.job.formula.requirements / 100);
 
@@ -297,8 +296,6 @@ console.log("im innnnnnnnnnn");
 				var sum = 0;
 				for (var i = 0; i < total_combination.length; i++) {
 					if(total_combination[i].combination_index == j) {
-						//console.log("total_combination[i].combination_index: "+total_combination[i].combination_index);
-						//console.log("j: "+j);
 						sum += total_combination[i].grade;
 					}
 				};
@@ -320,8 +317,6 @@ console.log("im innnnnnnnnnn");
 			};
 
 			requirements_result.grade = the_biggest_result.grade;
-
-			//console.log(requirements_result);
 
 
 callback(requirements_result);
@@ -594,68 +589,6 @@ exports.addFormula = addFormula;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// // Add Requirements - tomer codeeee
-// function addRequirements(requirements, callback) {
-
-//     console.log("im in Requirements function");
-
-//     var requirementsArr = [];
-
-//     // 1st para in async.each() is the array of items
-//     async.each(requirements,
-//         // 2nd param is the function that each item is passed to
-//         function (item, callback) {
-//             // Call an asynchronous function, often a save() to DB
-
-//             buildProfessionalKnowledge(item.combination, function (err, professionalKnowledgeArr) {
-//                 if (err) {
-//                     console.log("error in save requirements combination to db ");
-//                     console.log(err);
-//                     callback(false);
-//                 } else {
-//                     var combinationToadd = new RequirementsModel({
-//                         combination: professionalKnowledgeArr
-//                     });
-
-//                    //  save the  the requirements combination to db
-//                     combinationToadd.save(function (err, doc) {
-//                         if (err) {
-//                             console.log("error in save requirements combination to db ");
-//                             console.log(err);
-//                             callback(false);
-//                         } else {
-//                             requirementsArr.push(doc._id);
-//                             callback();
-//                         }
-//                     })
-//                 }
-//             })
-//         },
-//         // 3rd param is the function to call when everything's done
-//         function (err) {
-//             // All tasks are done now
-//             if (err) {
-//                 console.log("error in save requirements combination to db ");
-//                 console.log(err);
-//                 callback(false);
-//             } else {
-//                 callback(requirementsArr);
-//             }
-//         }
-//     );
-// }
 
 
 
