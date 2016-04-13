@@ -25,8 +25,10 @@ function addFormula(addFormula,callback){
 
 		// requirements
 		calculateRequirements(obj, function(result){
+			//console.log("result.grade: "+ result.grade);
+			//console.log("obj.job.formula.requirements : "+ obj.job.formula.requirements);
 			match.push(result.grade * (obj.job.formula.requirements / 100));
-			matcher_grade.formula.requirements.grade = result.grade * (obj.job.formula.requirements / 100);
+			matcher_grade.formula.requirements.grade = result.grade;
 
 			for (i=0; i < result.details.length; i++)
 			{
@@ -50,7 +52,7 @@ function addFormula(addFormula,callback){
 		caclulateDistance(obj, function(result) {
 			var locations_result = calc(result);
 			match.push(locations_result * (obj.job.formula.locations / 100));
-			matcher_grade.formula.locations = locations_result * (obj.job.formula.locations / 100);
+			matcher_grade.formula.locations = locations_result;
 			//console.log("locations_result: "+ locations_result);
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
@@ -65,7 +67,7 @@ function addFormula(addFormula,callback){
 		caclulateCandidateType(obj, function(result) {
 			var candidate_type_result = result;
 			match.push(candidate_type_result * (obj.job.formula.candidate_type / 100));
-			matcher_grade.formula.candidate_type = candidate_type_result * (obj.job.formula.candidate_type / 100);
+			matcher_grade.formula.candidate_type = candidate_type_result;
 			//console.log("candidate_type_result: "+ candidate_type_result);
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
@@ -80,7 +82,7 @@ function addFormula(addFormula,callback){
 		caclulateScopeOfPosition(obj, function(result) {
 			var scope_of_position_result = result;
 			match.push(scope_of_position_result * (obj.job.formula.scope_of_position / 100));
-			matcher_grade.formula.scope_of_position = scope_of_position_result * (obj.job.formula.scope_of_position / 100);
+			matcher_grade.formula.scope_of_position = scope_of_position_result;
 			//console.log("scope_of_position_result: "+ scope_of_position_result);
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
@@ -95,7 +97,7 @@ function addFormula(addFormula,callback){
 		caclulateAcademy(obj, function(result) {
 			var academy_result = result;
 			match.push(academy_result * (obj.job.formula.academy / 100));
-			matcher_grade.formula.academy = academy_result * (obj.job.formula.academy / 100);
+			matcher_grade.formula.academy = academy_result;
 			//console.log("academy_result: "+ academy_result);
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
