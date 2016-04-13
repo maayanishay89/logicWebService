@@ -17,11 +17,9 @@ app.get('/',function (req,res){
 });
 
 app.post('/addFormula',function(req,res){
-
-	console.log("Im in addFormula post");
-	console.log("formula" , req.body);
+	
+	
 	var formula = JSON.stringify(req.body);
-
 	Controller.addFormula(formula,function(formula){
 		res.json(formula);
 	});

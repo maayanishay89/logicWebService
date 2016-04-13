@@ -115,7 +115,6 @@ function addFormula(addFormula,callback){
 
  function calculateRequirements(obj, callback){
 
-console.log("im innnnnnnnnnn");
 	var employer=[];
 	var employee = [];
 	var total_combination=[];
@@ -185,7 +184,6 @@ console.log("im innnnnnnnnnn");
 		});
 	};
 
-
 	for (var c = 0; c < combination.length; c++) {
 
 			var employer_must=[];
@@ -206,7 +204,6 @@ console.log("im innnnnnnnnnn");
 			for (var b = 0; b < combination[c].adv.length; b++) {
 				employer_adv.push(combination[c].adv[b]);
 			};
-
 
 
 			// add field "grade" to the employer_must json struct
@@ -233,7 +230,6 @@ console.log("im innnnnnnnnnn");
 			 	employer_must[a].grade = ((employer_must[a].percentage)/100) * (employer_must.length * grade_per_must);
 			 }; 
 
-
 			for (var i = 0; i < employer_must.length; i++) {
 				for (var j = 0; j < employee.length; j++) {
 					if(employer_must[i].name == employee[j].name){
@@ -242,12 +238,16 @@ console.log("im innnnnnnnnnn");
 						}
 						else {
 							employee[j].years = employee[j].years / employer_must[i].years;
+								if(employee[j].years > 1) {
+									employee[j].years = 1;
+								}
 						}
 						employee[j].mode = "must";
 						employee[j].grade = (employee[j].years * employer_must[i].grade);
 					};
 				};	
 			};
+
 
 			for (var i = 0; i < employer_or.length; i++) {
 				for (var j = 0; j < employee.length; j++) {
@@ -257,6 +257,9 @@ console.log("im innnnnnnnnnn");
 						}
 						else {
 							employee[j].years = employee[j].years / employer_or[i].years;
+								if(employee[j].years > 1) {
+									employee[j].years = 1;
+								}
 						}
 						employee[j].mode = "or";
 						employee[j].grade = employee[j].years * grade_per_adv;
@@ -272,6 +275,9 @@ console.log("im innnnnnnnnnn");
 						}
 						else {
 							employee[j].years = employee[j].years / employer_adv[i].years;
+									if(employee[j].years > 1) {
+									employee[j].years = 1;
+								}
 						}
 						employee[j].mode = "adv";
 						employee[j].grade = employee[j].years * grade_per_adv;
@@ -317,6 +323,8 @@ console.log("im innnnnnnnnnn");
 			};
 
 			requirements_result.grade = the_biggest_result.grade;
+
+			console.log(requirements_result);
 
 
 callback(requirements_result);
