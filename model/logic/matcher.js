@@ -4,9 +4,11 @@ var matching_percent = 0;
 async = require("async");
 
 
-function addFormula(addFormula,callback){ 
+function calculateMatching(calculateMatching,callback){ 
 
-		var obj = JSON.parse(addFormula);
+
+
+		var obj = JSON.parse(calculateMatching);
 		var match = [];
 		var matcher_grade = {
 			"total_grade": null,
@@ -21,7 +23,6 @@ function addFormula(addFormula,callback){
 				"academy": null
 			}
 		}
-
 
 		// requirements
 		calculateRequirements(obj, function(result){
@@ -594,7 +595,7 @@ function caclulateFormula(match, callback){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-exports.addFormula = addFormula;
+exports.calculateMatching = calculateMatching;
 
 
 

@@ -1,17 +1,31 @@
-var express = require('./model/configuration/expressConfig');
+var Controller = require('./../../controller/controller');
 
 
-/*var db= mongoose(){
-}*/
+function fieldValidation(field) {
 
-var app = express();
+    if ((typeof field !== 'undefined' && field )) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-var port = process.env.PORT || 8000;
-app.listen(port);
-console.log("listening on port " + port + "\n");
+function sendErrorFieldValidation(res) {
+    var error = {
+        error: "the value of fields is incorrect or undefined"
+    };
+    res.json(error);
+}
 
+module.exports = function (app) {
 
+    app.get('/', function (req, res) {
+        res.send("Welcome");
+    });
 
+ app.post('/calculateMatching', Controller.calculateMatching);
+
+};
 
 // var express = require('express');
 // var bodyParser = require('body-parser');
@@ -52,7 +66,6 @@ console.log("listening on port " + port + "\n");
 
 
 // var port = process.env.PORT || 8005;
-
 // app.use('/',express.static('./public')).listen(port);
 // console.log("listening on port " + port +"\n");
 
