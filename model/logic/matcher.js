@@ -327,7 +327,7 @@ function calculateMatching(calculateMatching,callback){
 
 			requirements_result.grade = the_biggest_result.grade;
 
-			console.log(requirements_result);
+			//console.log(requirements_result);
 
 
 callback(requirements_result);
