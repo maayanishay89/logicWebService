@@ -42,7 +42,7 @@ function calculateMatching(calculateMatching,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					console.log(JSON.stringify(matcher_grade));
+					//console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);
 				});
 			} 		
@@ -58,7 +58,7 @@ function calculateMatching(calculateMatching,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					console.log(JSON.stringify(matcher_grade));
+				//	console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);
 				});
 			}
@@ -73,7 +73,7 @@ function calculateMatching(calculateMatching,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					console.log(JSON.stringify(matcher_grade));
+					//console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);				
 				});
 			} 
@@ -88,7 +88,7 @@ function calculateMatching(calculateMatching,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					console.log(JSON.stringify(matcher_grade));
+				//	console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);				
 				});
 			} 
@@ -103,7 +103,7 @@ function calculateMatching(calculateMatching,callback){
 			if (match.length == 5){
 				caclulateFormula(match, function(total){
 					matcher_grade.total_grade = total;
-					console.log(JSON.stringify(matcher_grade));
+					//console.log(JSON.stringify(matcher_grade));
 					callback(matcher_grade);						
 				});
 			}  
@@ -233,6 +233,7 @@ function calculateMatching(calculateMatching,callback){
 			 	employer_must[a].grade = ((employer_must[a].percentage)/100) * (employer_must.length * grade_per_must);
 			 }; 
 
+
 			for (var i = 0; i < employer_must.length; i++) {
 				for (var j = 0; j < employee.length; j++) {
 					if(employer_must[i].name == employee[j].name){
@@ -288,14 +289,21 @@ function calculateMatching(calculateMatching,callback){
 				};	
 			};
 
+			// console.log(employer_must);
+			// console.log(employer_or);
+			// console.log(employer_adv);
+			// console.log(employee);
+
 
 			for (i=0; i < employee.length; i++)
 			{
-				var comb ={	
+				if(employee[i].grade != undefined){
+						var comb ={	
 							"name": employee[i].name,
 							"grade": employee[i].grade,
 							"combination_index":c
-				}
+						}
+				}	
 			total_combination.push(comb);
 			}
 
@@ -327,7 +335,7 @@ function calculateMatching(calculateMatching,callback){
 
 			requirements_result.grade = the_biggest_result.grade;
 
-			//console.log(requirements_result);
+			console.log(requirements_result);
 
 
 callback(requirements_result);
