@@ -25,89 +25,160 @@ function calculateMatching(calculateMatching,callback){
 		}
 
 		// requirements
-		calculateRequirements(obj, function(result){
-			//console.log("result.grade: "+ result.grade);
-			//console.log("obj.job.formula.requirements : "+ obj.job.formula.requirements);
-			match.push(result.grade * (obj.job.formula.requirements / 100));
-			matcher_grade.formula.requirements.grade = result.grade;
+		if (obj.job.formula.requirements != 0){
+			console.log("im in requirements if ");
+			calculateRequirements(obj, function(result){
+				match.push(result.grade * (obj.job.formula.requirements / 100));
+				matcher_grade.formula.requirements.grade = result.grade;
 
-			for (i=0; i < result.details.length; i++)
+				for (i=0; i < result.details.length; i++)
+				{
+					var detailsTmp ={	
+								"name": result.details[i].name,
+								"grade": result.details[i].grade
+					}
+				 	matcher_grade.formula.requirements.details.push(detailsTmp);
+				}
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);
+					});
+				} 		
+			});
+		}
+		else{
+			console.log("im in requirements else");
+			var i =0;
+			for (var j = 0; j < obj.job.requirements[i].combination.length; j++)
 			{
 				var detailsTmp ={	
-							"name": result.details[i].name,
-							"grade": result.details[i].grade
+						"name": obj.job.requirements[i].combination[j].name,
+						"grade": 0
 				}
 			 	matcher_grade.formula.requirements.details.push(detailsTmp);
 			}
-			if (match.length == 5){
-				caclulateFormula(match, function(total){
-					matcher_grade.total_grade = total;
-					//console.log(JSON.stringify(matcher_grade));
-					callback(matcher_grade);
-				});
-			} 		
-		});
+			matcher_grade.formula.requirements.grade = 0;
+			match.push(0);
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				} 
+		}
 
 
 		// locations
-		caclulateDistance(obj, function(result) {
-			var locations_result = calc(result);
-			match.push(locations_result * (obj.job.formula.locations / 100));
-			matcher_grade.formula.locations = locations_result;
-			//console.log("locations_result: "+ locations_result);
-			if (match.length == 5){
-				caclulateFormula(match, function(total){
-					matcher_grade.total_grade = total;
-				//	console.log(JSON.stringify(matcher_grade));
-					callback(matcher_grade);
-				});
-			}
-		});
+		if(obj.job.formula.locations != 0 ){
+			console.log("im in locations if ");
+			caclulateDistance(obj, function(result) {
+				var locations_result = calc(result);
+				match.push(locations_result * (obj.job.formula.locations / 100));
+				matcher_grade.formula.locations = locations_result;
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);
+					});
+				}
+			});
+		}
+		else{
+			console.log("im in locations else");
+			matcher_grade.formula.locations = 0;
+			match.push(0);
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				} 
+		}
+
 
 		// candidate_type
-		caclulateCandidateType(obj, function(result) {
-			var candidate_type_result = result;
-			match.push(candidate_type_result * (obj.job.formula.candidate_type / 100));
-			matcher_grade.formula.candidate_type = candidate_type_result;
-			//console.log("candidate_type_result: "+ candidate_type_result);
-			if (match.length == 5){
-				caclulateFormula(match, function(total){
-					matcher_grade.total_grade = total;
-					//console.log(JSON.stringify(matcher_grade));
-					callback(matcher_grade);				
-				});
-			} 
-		});
+		if (obj.job.formula.candidate_type != 0) {
+			console.log("im in candidate_type if ");
+			caclulateCandidateType(obj, function(result) {
+				var candidate_type_result = result;
+				match.push(candidate_type_result * (obj.job.formula.candidate_type / 100));
+				matcher_grade.formula.candidate_type = candidate_type_result;
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);				
+					});
+				} 
+			});
+		}
+		else{
+			console.log("im in candidate_type else ");
+			matcher_grade.formula.candidate_type = 0;
+			match.push(0);
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				} 
+		}
+
 
 		// scope_of_position
-		caclulateScopeOfPosition(obj, function(result) {
-			var scope_of_position_result = result;
-			match.push(scope_of_position_result * (obj.job.formula.scope_of_position / 100));
-			matcher_grade.formula.scope_of_position = scope_of_position_result;
-			//console.log("scope_of_position_result: "+ scope_of_position_result);
-			if (match.length == 5){
-				caclulateFormula(match, function(total){
-					matcher_grade.total_grade = total;
-				//	console.log(JSON.stringify(matcher_grade));
-					callback(matcher_grade);				
-				});
-			} 
-		});
+		if (obj.job.formula.scope_of_position != 0) {
+			console.log("im in scope_of_position if");
+			caclulateScopeOfPosition(obj, function(result) {
+				var scope_of_position_result = result;
+				match.push(scope_of_position_result * (obj.job.formula.scope_of_position / 100));
+				matcher_grade.formula.scope_of_position = scope_of_position_result;
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);				
+					});
+				} 
+			});
+		}
+		else{
+			console.log("im in scope_of_position else");
+			matcher_grade.formula.scope_of_position = 0;
+			match.push(0);
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				} 
+		}
+
 
 		// academy
-		caclulateAcademy(obj, function(result) {
-			var academy_result = result;
-			match.push(academy_result * (obj.job.formula.academy / 100));
-			matcher_grade.formula.academy = academy_result;
-			//console.log("academy_result: "+ academy_result);
-			if (match.length == 5){
-				caclulateFormula(match, function(total){
-					matcher_grade.total_grade = total;
-					//console.log(JSON.stringify(matcher_grade));
-					callback(matcher_grade);						
-				});
-			}  
-		});
+		if (obj.job.formula.academy != 0) {
+			console.log("im in academy if ");
+			caclulateAcademy(obj, function(result) {
+				var academy_result = result;
+				match.push(academy_result * (obj.job.formula.academy / 100));
+				matcher_grade.formula.academy = academy_result;
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				}  
+			});
+		}		
+		else{
+			console.log("im in academy else ");
+			matcher_grade.formula.academy = 0;
+			match.push(0);
+				if (match.length == 5){
+					caclulateFormula(match, function(total){
+						matcher_grade.total_grade = total;
+						callback(matcher_grade);						
+					});
+				} 
+		}
 
 };
 
@@ -289,11 +360,6 @@ function calculateMatching(calculateMatching,callback){
 				};	
 			};
 
-			// console.log(employer_must);
-			// console.log(employer_or);
-			// console.log(employer_adv);
-			// console.log(employee);
-
 
 			for (i=0; i < employee.length; i++)
 			{
@@ -303,11 +369,13 @@ function calculateMatching(calculateMatching,callback){
 							"grade": employee[i].grade,
 							"combination_index":c
 						}
+					total_combination.push(comb);
 				}	
-			total_combination.push(comb);
 			}
 
 	};
+
+	console.log(total_combination);
 
 			for (var j = 0; j < total_combination[total_combination.length -1].combination_index +1; j++) {
 				var sum = 0;
@@ -335,7 +403,7 @@ function calculateMatching(calculateMatching,callback){
 
 			requirements_result.grade = the_biggest_result.grade;
 
-			console.log(requirements_result);
+			//console.log(requirements_result);
 
 
 callback(requirements_result);
@@ -460,6 +528,9 @@ function caclulateCandidateType(obj,callback){
 				candidate_type_cv.push(obj.cv.candidate_type[i]);
 		};
 
+		// console.log(candidate_type_employer);
+		// console.log(candidate_type_cv);
+
 		var size_of_type_cv = candidate_type_cv.length;
 		// Descending score for each type that not contained in employer type
 		var grade_of_diff = 20; 
@@ -476,6 +547,8 @@ function caclulateCandidateType(obj,callback){
 
 		var diff = size_of_type_cv - counter;
 		var candidate_type_result = 100 - (grade_of_diff * diff);
+
+		//console.log(candidate_type_result);
 		callback(candidate_type_result);
 
 }
