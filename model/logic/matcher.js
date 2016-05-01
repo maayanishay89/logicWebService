@@ -375,8 +375,8 @@ function calculateMatching(calculateMatching,callback){
 
 	};
 
-	console.log(total_combination);
 
+	if (total_combination.length != 0) {
 			for (var j = 0; j < total_combination[total_combination.length -1].combination_index +1; j++) {
 				var sum = 0;
 				for (var i = 0; i < total_combination.length; i++) {
@@ -388,7 +388,7 @@ function calculateMatching(calculateMatching,callback){
 			};
 
 			for (var i = 0; i < grades_of_combinations.length; i++) {
-				if(grades_of_combinations[i]> the_biggest_result.grade){
+				if(grades_of_combinations[i] > the_biggest_result.grade){
 					the_biggest_result.grade = grades_of_combinations[i];
 					the_biggest_result.index = i; 
 				}
@@ -402,6 +402,10 @@ function calculateMatching(calculateMatching,callback){
 			};
 
 			requirements_result.grade = the_biggest_result.grade;
+	}
+	else{
+			requirements_result.grade = 0;
+	}
 
 			//console.log(requirements_result);
 
