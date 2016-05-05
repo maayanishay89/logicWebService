@@ -6,8 +6,6 @@ async = require("async");
 
 function calculateMatching(calculateMatching,callback){ 
 
-
-
 		var obj = JSON.parse(calculateMatching);
 		var match = [];
 		var matcher_grade = {
@@ -26,7 +24,6 @@ function calculateMatching(calculateMatching,callback){
 
 		// requirements
 		if (obj.job.formula.requirements != 0){
-			console.log("im in requirements if ");
 			calculateRequirements(obj, function(result){
 				match.push(result.grade * (obj.job.formula.requirements / 100));
 				matcher_grade.formula.requirements.grade = result.grade;
@@ -48,7 +45,6 @@ function calculateMatching(calculateMatching,callback){
 			});
 		}
 		else{
-			console.log("im in requirements else");
 			var i =0;
 			for (var j = 0; j < obj.job.requirements[i].combination.length; j++)
 			{
@@ -71,7 +67,6 @@ function calculateMatching(calculateMatching,callback){
 
 		// locations
 		if(obj.job.formula.locations != 0 ){
-			console.log("im in locations if ");
 			caclulateDistance(obj, function(result) {
 				var locations_result = calc(result);
 				match.push(locations_result * (obj.job.formula.locations / 100));
@@ -85,7 +80,6 @@ function calculateMatching(calculateMatching,callback){
 			});
 		}
 		else{
-			console.log("im in locations else");
 			matcher_grade.formula.locations = 0;
 			match.push(0);
 				if (match.length == 5){
@@ -99,7 +93,6 @@ function calculateMatching(calculateMatching,callback){
 
 		// candidate_type
 		if (obj.job.formula.candidate_type != 0) {
-			console.log("im in candidate_type if ");
 			caclulateCandidateType(obj, function(result) {
 				var candidate_type_result = result;
 				match.push(candidate_type_result * (obj.job.formula.candidate_type / 100));
@@ -113,7 +106,6 @@ function calculateMatching(calculateMatching,callback){
 			});
 		}
 		else{
-			console.log("im in candidate_type else ");
 			matcher_grade.formula.candidate_type = 0;
 			match.push(0);
 				if (match.length == 5){
@@ -127,7 +119,6 @@ function calculateMatching(calculateMatching,callback){
 
 		// scope_of_position
 		if (obj.job.formula.scope_of_position != 0) {
-			console.log("im in scope_of_position if");
 			caclulateScopeOfPosition(obj, function(result) {
 				var scope_of_position_result = result;
 				match.push(scope_of_position_result * (obj.job.formula.scope_of_position / 100));
@@ -141,7 +132,6 @@ function calculateMatching(calculateMatching,callback){
 			});
 		}
 		else{
-			console.log("im in scope_of_position else");
 			matcher_grade.formula.scope_of_position = 0;
 			match.push(0);
 				if (match.length == 5){
@@ -155,7 +145,6 @@ function calculateMatching(calculateMatching,callback){
 
 		// academy
 		if (obj.job.formula.academy != 0) {
-			console.log("im in academy if ");
 			caclulateAcademy(obj, function(result) {
 				var academy_result = result;
 				match.push(academy_result * (obj.job.formula.academy / 100));
@@ -169,7 +158,6 @@ function calculateMatching(calculateMatching,callback){
 			});
 		}		
 		else{
-			console.log("im in academy else ");
 			matcher_grade.formula.academy = 0;
 			match.push(0);
 				if (match.length == 5){
@@ -190,10 +178,12 @@ function calculateMatching(calculateMatching,callback){
  function calculateRequirements(obj, callback){
 
 	var employer=[];
-	var employee = [];
 	var total_combination=[];
 	var combination =[];
 	var grades_of_combinations = [];
+
+	// data from the job seeker
+	var employee = obj.cv.requirements[0].combination;
 
 	var the_biggest_result={
 		"grade": 0,
@@ -208,29 +198,7 @@ function calculateMatching(calculateMatching,callback){
 		"grade":null
     }
 
-
-	// data from the job seeker
-	for (var i = 0; i < obj.cv.requirements[0].combination.length; i++) {
-		employee.push(obj.cv.requirements[0].combination[i]);	
-	};
-
- // var combination = [
-	//  	{
-	//  		"must":[{"name":"c++","years":1,"mode":"must","percentage":80},{"name":"c","years":3,"mode":"must","percentage":20}],
-	//  		"or":[{"name":"java","years":0,"mode":"or","percentage":null},{"name":"html","years":0,"mode":"or","percentage":null}],
-	//  		"adv":[{"name":"c#","years":1,"mode":"adv","percentage":null},{"name":"js","years":2,"mode":"adv","percentage":null},{"name":"angular","years":1,"mode":"adv","percentage":null}]
-	//  	},
-	//  	{
-	//  		"must":[{"name":"c++","years":3,"mode":"must","percentage":80},{"name":"c","years":1,"mode":"must","percentage":20}],
-	//  		"or":[{"name":"java","years":2,"mode":"or","percentage":null},{"name":"html","years":2,"mode":"or","percentage":null}],
-	//  		"adv":[{"name":"c#","years":2,"mode":"adv","percentage":null},{"name":"js","years":1,"mode":"adv","percentage":null},{"name":"angular","years":2,"mode":"adv","percentage":null}]
-	//  	}
- 	// ]
-
-
-
 	// how many combination there is in employer array
-
 	for (var i = 0; i < obj.job.requirements.length; i++) {	
 
 		var tmp_must = [];
@@ -268,7 +236,6 @@ function calculateMatching(calculateMatching,callback){
 			var counter = 0;
 			
 			//data from the employer
-
 			for (var b = 0; b < combination[c].must.length; b++) {
 				employer_must.push(combination[c].must[b]);
 			};
@@ -284,7 +251,6 @@ function calculateMatching(calculateMatching,callback){
 			for (var i = 0; i < employer_must.length; i++) {
 				employer_must[i].grade = null;
 			};
-
 
 			var must = employer_must.length;
 			var adv = employer_adv.length;
@@ -375,7 +341,6 @@ function calculateMatching(calculateMatching,callback){
 
 	};
 
-
 	if (total_combination.length != 0) {
 			for (var j = 0; j < total_combination[total_combination.length -1].combination_index +1; j++) {
 				var sum = 0;
@@ -407,10 +372,8 @@ function calculateMatching(calculateMatching,callback){
 			requirements_result.grade = 0;
 	}
 
-			//console.log(requirements_result);
+ callback(requirements_result);
 
-
-callback(requirements_result);
  }
 
 
@@ -418,21 +381,10 @@ callback(requirements_result);
 
 function caclulateDistance(obj,callback) {
 
-		var destination = []; //tv haifa natania
-		var origin = []; //ranat gan raanana
+		var destination = obj.job.locations; 
+		var origin = obj.cv.locations;
 		var locations_result = 0;
 		var x = 42;
-
-
-		for (var i = 0; i < obj.job.locations.length; i++) {
-				destination.push(obj.job.locations[i]);
-		};
-
-		for (var i = 0; i < obj.cv.locations.length; i++) {
-				origin.push(obj.cv.locations[i]);
-		};
-
-    	var x = 42;
 
 		// 1st para in async.each() is the array of items
 		async.each(origin,
@@ -449,13 +401,11 @@ function caclulateDistance(obj,callback) {
 								callback(false);
 							}
 							else{
-								//console.log(item);
 								var stringDistance = data.distance;
 								var numberDistance = stringDistance.split(" ");
 													
 								if (numberDistance[0] < x){
 									x = numberDistance[0];
-									//console.log("x: "+x);								
 								}
 								callback();
 							}
@@ -470,7 +420,6 @@ function caclulateDistance(obj,callback) {
 						callback(false);
 					} else {
 						callback(x);
-						//console.log("x in the function: "+ x);
 					}
 				}
 		);	
@@ -520,20 +469,8 @@ function calc(num){
 
 function caclulateCandidateType(obj,callback){
 
-		var candidate_type_employer = []; //tv haifa natania
-		var candidate_type_cv = []; //ranat gan raanana
-
-
-		for (var i = 0; i < obj.job.candidate_type.length; i++) {
-				candidate_type_employer.push(obj.job.candidate_type[i]);
-		};
-
-		for (var i = 0; i < obj.cv.candidate_type.length; i++) {
-				candidate_type_cv.push(obj.cv.candidate_type[i]);
-		};
-
-		// console.log(candidate_type_employer);
-		// console.log(candidate_type_cv);
+		var candidate_type_employer = obj.job.candidate_type; 
+		var candidate_type_cv = obj.cv.candidate_type; 
 
 		var size_of_type_cv = candidate_type_cv.length;
 		// Descending score for each type that not contained in employer type
@@ -552,7 +489,6 @@ function caclulateCandidateType(obj,callback){
 		var diff = size_of_type_cv - counter;
 		var candidate_type_result = 100 - (grade_of_diff * diff);
 
-		//console.log(candidate_type_result);
 		callback(candidate_type_result);
 
 }
@@ -567,18 +503,9 @@ function caclulateScopeOfPosition(obj, callback){
 		// part time
 		// by hours
 
-		var scope_of_position_employer = [];
-		var scope_of_position_cv = [];
+		var scope_of_position_employer = obj.job.scope_of_position;
+		var scope_of_position_cv = obj.cv.scope_of_position;
 		var scope_of_position_result = 0;
-
-		for (var i = 0; i < obj.job.scope_of_position.length; i++) {
-				scope_of_position_employer.push(obj.job.scope_of_position[i]);
-		};
-
-		for (var i = 0; i < obj.cv.scope_of_position.length; i++) {
-				scope_of_position_cv.push(obj.cv.scope_of_position[i]);
-		};		
-
 
 		for (var i = 0; i < scope_of_position_employer.length; i++) {
 			for (var j = 0; j < scope_of_position_cv.length; j++) {
@@ -598,35 +525,13 @@ function caclulateScopeOfPosition(obj, callback){
 function caclulateAcademy(obj, callback){
 
 
-		var academy_employer = { "academy_type": [] , "degree_type": [] };
-		var academy_cv = { "academy_type": [] , "degree_type": [] };
+		var academy_employer = { "academy_type": obj.job.academy.academy_type , "degree_type": obj.job.academy.degree_type };
+		var academy_cv = { "academy_type": obj.cv.academy.academy_type , "degree_type": obj.cv.academy.degree_type };
 
 		// add two fields "grade" to the json struct
 
 		academy_cv.grade_academy_type = null;
 		academy_cv.grade_degree_type = null;
-
-
-		//console.log(obj.cv.academy.academy_type.length);
-
-		for (var i = 0; i < obj.job.academy.academy_type.length; i++) {
-				academy_employer.academy_type.push(obj.job.academy.academy_type[i]);
-		};
-
-		for (var i = 0; i < obj.job.academy.degree_type.length; i++) {
-				academy_employer.degree_type.push(obj.job.academy.degree_type[i]);
-		};
-
-		for (var i = 0; i < obj.cv.academy.academy_type.length; i++) {
-				academy_cv.academy_type.push(obj.cv.academy.academy_type[i]);
-		};
-
-		for (var i = 0; i < obj.cv.academy.degree_type.length; i++) {
-				academy_cv.degree_type.push(obj.cv.academy.degree_type[i]);
-		};
-
-		//console.log(academy_employer);
-		//console.log(academy_cv);
 
 
 		if (academy_cv.academy_type && academy_cv.degree_type) {
