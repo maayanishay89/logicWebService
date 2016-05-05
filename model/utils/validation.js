@@ -220,11 +220,11 @@ function updateMatchingObject(req) {
 
 ///////////////////////////////////// *** EXPORTS *** /////////////////////////////////
 
-exports.addMatchingObject = addMatchingObject; //
-exports.getMatchingObject = getMatchingObject; //
-exports.deleteMatchingObject = deleteMatchingObject; //
-exports.reviveMatchingObject = reviveMatchingObject; //
-exports.updateMatchingObject = updateMatchingObject; //
+exports.addMatchingObject = addMatchingObject; 
+exports.getMatchingObject = getMatchingObject; 
+exports.deleteMatchingObject = deleteMatchingObject; 
+exports.reviveMatchingObject = reviveMatchingObject; 
+exports.updateMatchingObject = updateMatchingObject; 
 
 
 
