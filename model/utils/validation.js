@@ -1,63 +1,17 @@
-
-
 /* Common */
 
 function fieldValidation(field) {
     return !!(typeof field !== 'undefined' && field != null );
 }
 
-/* Input types validations */
-
-function validateYear(year) {
-    return /^\d{4}$/.test(year)
-}
-
 function validatePositiveNumber(number) {
     return /^[1-9][0-9]?$|^100$|^0$/.test(number);
-}
-
-function validatePersonalId( id ) {
-    var multiply, digit, sum, numeric;
-
-    // Numeric only
-    if ( !/^\d{1,9}$/g.test( id ) ) {
-        return false;
-    }
-
-    // Save original value and length (without leading 0s)
-    numeric = parseInt( id, 10 );
-
-    if(numeric === 0){
-        return false;
-    }
-
-    // Perform safety digit check
-    for (multiply = false, sum = 0; numeric > 0; multiply = !multiply) {
-        digit = numeric % 10;
-        numeric = parseInt( ( numeric / 10 ), 10 );
-        if ( digit !== 0 ) {
-            if ( multiply ) {
-                digit *= 2;
-                if ( digit > 9 ) {
-                    digit = ( 1 /*The first digit will be 1 at most*/ + ( digit % 10 ) );
-                }
-            }
-            sum += digit;
-        }
-    }
-
-    return ( sum % 10 === 0 );
-}
-
-function validateEmail(email) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(email);
 }
 
 /* End common */
 
 
-/* Private functions for matching object */
+/* private functions for matching object */
 
 function locationsValidation(locations) {
     return locations
@@ -94,6 +48,7 @@ function academyTypeValidation(academyType) {
     && academyType.length > 0 ? true : false;
 }
 
+
 function formulaValidation(formula) {
     var valid = formula
     && fieldValidation(formula.locations)
@@ -105,16 +60,21 @@ function formulaValidation(formula) {
     var formulaAmount = 0;
     if (valid) {
         for (var property in formula) {
-            if (!(validatePositiveNumber(formula[property]))) { // check for positive number and lower then 100
-                valid = false;
-                break;
+
+            if ( property != "_id" && property != "__v" && property != "matching_requirements") {
+                if ((validatePositiveNumber(formula[property]))) { // check for positive number and lower then 100
+                    formulaAmount += formula[property];
+                }else {
+                    valid = false;
+                    break;
+                }
             }
-            formulaAmount += formula[property];
         }
         return !!(valid && formulaAmount === 100); // verify formula is not bigger the 100
 
     } else return false;
 }
+
 
 function requirementsValidation(requirements, type) {
 
@@ -167,64 +127,40 @@ function requirementsValidation(requirements, type) {
     } else return false;
 }
 
+
 /* End private functions for matching object */
 
 
 ///////////////////////////////// *** Matching Objects *** ///////////////////////////
 
 function addMatchingObject(req) {
-    var matchingObject = req.body;
-    if (matchingObject
-        && locationsValidation(matchingObject.locations)
-        && candidateTypeValidation(matchingObject.candidate_type)
-        && scopeOfPositionValidation(matchingObject.scope_of_position)
-        && academyDegreeTypeValidation(matchingObject.academy.degree_type)
-        && academyTypeValidation(matchingObject.academy.academy_type)
-        && requirementsValidation(matchingObject.requirements, matchingObject.matching_object_type)
 
-    ) {
-        if (matchingObject.matching_object_type === "cv") {
-            return personalPropertiesValidation(matchingObject.personal_properties) ? true : false;
-        } else if (matchingObject.matching_object_type === "job") {
-            return fieldValidation(matchingObject.compatibility_level)
-            && validatePositiveNumber(matchingObject.compatibility_level) // check number between 1-100
-            && formulaValidation(matchingObject.formula)
-                ? true : false;
-        } else {
-            return false;
-        }
+    var matchingObject = req.body;
+
+    if (matchingObject
+        && locationsValidation(matchingObject.job.locations)
+        && locationsValidation(matchingObject.cv.locations)
+        && candidateTypeValidation(matchingObject.job.candidate_type)
+        && candidateTypeValidation(matchingObject.cv.candidate_type)
+        && scopeOfPositionValidation(matchingObject.job.scope_of_position)
+        && scopeOfPositionValidation(matchingObject.cv.scope_of_position)
+        && academyDegreeTypeValidation(matchingObject.job.academy.degree_type)
+        && academyDegreeTypeValidation(matchingObject.cv.academy.degree_type)
+        && academyTypeValidation(matchingObject.job.academy.academy_type)
+        && academyTypeValidation(matchingObject.cv.academy.academy_type)
+        && requirementsValidation(matchingObject.job.requirements, matchingObject.job.matching_object_type)
+        && requirementsValidation(matchingObject.cv.requirements, matchingObject.cv.matching_object_type)
+        && formulaValidation(matchingObject.job.formula)
+    ) { 
+        return true; 
     } else {
         return false;
     }
 }
 
-function getMatchingObject(req) {
-    return req.body
-    && fieldValidation(req.body.matching_object_id)
-    && fieldValidation(req.body.matching_object_type)
-    && (req.body.matching_object_type == "cv" || req.body.matching_object_type == "job" )
-        ? true : false
-}
-
-function deleteMatchingObject(req) {
-    return req.body && fieldValidation(req.body.matching_object_id) ? true : false
-}
-
-function reviveMatchingObject(req) {
-    return req.body && fieldValidation(req.body.matching_object_id) ? true : false
-}
-
-function updateMatchingObject(req) {
-    return true;
-}
-
 ///////////////////////////////////// *** EXPORTS *** /////////////////////////////////
 
 exports.addMatchingObject = addMatchingObject; 
-exports.getMatchingObject = getMatchingObject; 
-exports.deleteMatchingObject = deleteMatchingObject; 
-exports.reviveMatchingObject = reviveMatchingObject; 
-exports.updateMatchingObject = updateMatchingObject; 
 
 
 

@@ -5,7 +5,6 @@ async = require("async");
 
 
 function calculateMatching(calculateMatching,callback){ 
-
 		var obj = JSON.parse(calculateMatching);
 		var match = [];
 		var matcher_grade = {
@@ -41,7 +40,7 @@ function calculateMatching(calculateMatching,callback){
 						matcher_grade.total_grade = total;
 						callback(matcher_grade);
 					});
-				} 		
+				} 
 			});
 		}
 		else{
@@ -85,7 +84,7 @@ function calculateMatching(calculateMatching,callback){
 				if (match.length == 5){
 					caclulateFormula(match, function(total){
 						matcher_grade.total_grade = total;
-						callback(matcher_grade);						
+						callback(matcher_grade);
 					});
 				} 
 		}
@@ -100,7 +99,7 @@ function calculateMatching(calculateMatching,callback){
 				if (match.length == 5){
 					caclulateFormula(match, function(total){
 						matcher_grade.total_grade = total;
-						callback(matcher_grade);				
+						callback(matcher_grade);			
 					});
 				} 
 			});
@@ -111,7 +110,7 @@ function calculateMatching(calculateMatching,callback){
 				if (match.length == 5){
 					caclulateFormula(match, function(total){
 						matcher_grade.total_grade = total;
-						callback(matcher_grade);						
+						callback(matcher_grade);
 					});
 				} 
 		}
@@ -137,7 +136,7 @@ function calculateMatching(calculateMatching,callback){
 				if (match.length == 5){
 					caclulateFormula(match, function(total){
 						matcher_grade.total_grade = total;
-						callback(matcher_grade);						
+						callback(matcher_grade);
 					});
 				} 
 		}
@@ -152,7 +151,7 @@ function calculateMatching(calculateMatching,callback){
 				if (match.length == 5){
 					caclulateFormula(match, function(total){
 						matcher_grade.total_grade = total;
-						callback(matcher_grade);						
+						callback(matcher_grade);					
 					});
 				}  
 			});
@@ -225,6 +224,7 @@ function calculateMatching(calculateMatching,callback){
 			"adv":tmp_adv
 		});
 	};
+
 
 	for (var c = 0; c < combination.length; c++) {
 
@@ -326,20 +326,20 @@ function calculateMatching(calculateMatching,callback){
 				};	
 			};
 
-
 			for (i=0; i < employee.length; i++)
 			{
 				if(employee[i].grade != undefined){
 						var comb ={	
 							"name": employee[i].name,
 							"grade": employee[i].grade,
-							"combination_index":c
+							"combination_index": c
 						}
 					total_combination.push(comb);
+					 employee[i].grade =undefined ;
 				}	
 			}
-
 	};
+
 
 	if (total_combination.length != 0) {
 			for (var j = 0; j < total_combination[total_combination.length -1].combination_index +1; j++) {
@@ -383,48 +383,38 @@ function caclulateDistance(obj,callback) {
 
 		var destination = obj.job.locations; 
 		var origin = obj.cv.locations;
-		var locations_result = 0;
+		var totalLength = destination.length * origin.length;
+		var distanceArr = [];
 		var x = 42;
 
-		// 1st para in async.each() is the array of items
-		async.each(origin,
-				// 2nd param is the function that each item is passed to
-				function(item, callback){
-						// Call an asynchronous function, often a save() to DB
-						distance.get({
-							origin: item + ', IL',
-							destination: destination[0] + ', IL'
-						},
-						function(err, data) {
-							if (err) {
-								console.log(err);
-								callback(false);
-							}
-							else{
-								var stringDistance = data.distance;
-								var numberDistance = stringDistance.split(" ");
-													
-								if (numberDistance[0] < x){
-									x = numberDistance[0];
-								}
-								callback();
-							}
-						});							
-				},
-				// 3rd param is the function to call when everything's done
-				function (err) {
-					// All tasks are done now
-					if (err) {
-						console.log("error in save requirements combination to db ");
-						console.log(err);
-						callback(false);
-					} else {
-						callback(x);
-					}
-				}
-		);	
-}
+		for (var i = 0; i < destination.length ; i++) {
+			for (var j = 0; j < origin.length; j++) {
 
+				distance.get(
+					  {
+					    origin: origin[j] + ', IL',
+					    destination: destination[i] + ', IL'
+					  },
+					  function(err, data) {
+					    if (err) {
+					    	callback(err);
+					    	return console.log(err);
+					    }
+					    else {
+					    	var stringDistance = data.distance;
+					    	var split = stringDistance.split(/[a-z]+/);
+					    	distanceArr.push(split[0]);
+
+					    	 if (distanceArr.length == totalLength) {
+						    	var min = Math.min.apply(Math, distanceArr);
+					    	}
+					    	callback(min);
+					    }				   
+					   
+				});
+			};
+		};
+}
 
 
 function calc(num){
@@ -470,7 +460,7 @@ function calc(num){
 function caclulateCandidateType(obj,callback){
 
 		var candidate_type_employer = obj.job.candidate_type; 
-		var candidate_type_cv = obj.cv.candidate_type; 
+		var candidate_type_cv = obj.cv.candidate_type;
 
 		var size_of_type_cv = candidate_type_cv.length;
 		// Descending score for each type that not contained in employer type
@@ -486,8 +476,13 @@ function caclulateCandidateType(obj,callback){
 			};		
 		};
 
-		var diff = size_of_type_cv - counter;
-		var candidate_type_result = 100 - (grade_of_diff * diff);
+		if (counter != 0){
+			var diff = size_of_type_cv - counter;
+			var candidate_type_result = 100 - (grade_of_diff * diff);
+		}
+		else {
+			var candidate_type_result = 0;
+		}
 
 		callback(candidate_type_result);
 
@@ -509,7 +504,7 @@ function caclulateScopeOfPosition(obj, callback){
 
 		for (var i = 0; i < scope_of_position_employer.length; i++) {
 			for (var j = 0; j < scope_of_position_cv.length; j++) {
-					if (scope_of_position_employer[i].scope == scope_of_position_cv[j].scope) {
+					if (scope_of_position_employer[i] == scope_of_position_cv[j]) {
 						scope_of_position_result = 100;
 					}
 			};		
@@ -526,15 +521,13 @@ function caclulateAcademy(obj, callback){
 
 
 		var academy_employer = { "academy_type": obj.job.academy.academy_type , "degree_type": obj.job.academy.degree_type };
-		var academy_cv = { "academy_type": obj.cv.academy.academy_type , "degree_type": obj.cv.academy.degree_type };
+		var academy_cv = { "academy_type": obj.cv.academy.academy_type , "degree_type": obj.cv.academy.degree_type }; 
 
 		// add two fields "grade" to the json struct
+		academy_cv.grade_academy_type = 0;
+		academy_cv.grade_degree_type = 0;
 
-		academy_cv.grade_academy_type = null;
-		academy_cv.grade_degree_type = null;
-
-
-		if (academy_cv.academy_type && academy_cv.degree_type) {
+		if (academy_cv.academy_type.length != 0 && academy_cv.degree_type.length != 0) {
 
 			if (academy_employer.academy_type.length > 1) {
 			academy_cv.grade_academy_type = 50;	
@@ -566,7 +559,6 @@ function caclulateAcademy(obj, callback){
 
 		var academy_result = academy_cv.grade_degree_type + academy_cv.grade_academy_type;
 		callback(academy_result);
-
 }
 
 ////////////////////////////////////////////////////// ** Formula ** //////////////////////////////////////////////////////
