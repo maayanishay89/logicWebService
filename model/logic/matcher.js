@@ -373,6 +373,7 @@ function calculateMatching(calculateMatching,callback){
 	}
 
  callback(requirements_result);
+ console.log(requirements_result);
 
  }
 
@@ -415,6 +416,8 @@ function caclulateDistance(obj,callback) {
 			};
 		};
 }
+
+ console.log(min);
 
 
 function calc(num){
@@ -485,6 +488,7 @@ function caclulateCandidateType(obj,callback){
 		}
 
 		callback(candidate_type_result);
+		 console.log(candidate_type_result);
 
 }
 
@@ -559,6 +563,7 @@ function caclulateAcademy(obj, callback){
 
 		var academy_result = academy_cv.grade_degree_type + academy_cv.grade_academy_type;
 		callback(academy_result);
+		console.log(academy_result);
 }
 
 ////////////////////////////////////////////////////// ** Formula ** //////////////////////////////////////////////////////
@@ -572,6 +577,7 @@ function caclulateFormula(match, callback){
 		total += match[i];
 	}
 	callback(total);
+	console.log(total);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
