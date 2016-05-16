@@ -1,6 +1,6 @@
 
 var distance = require('google-distance');
-var matching_percent = 0;
+//var matching_percent = 0;
 async = require("async");
 
 
