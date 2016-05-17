@@ -410,6 +410,8 @@ function caclulateDistance(obj,callback) {
 						    	var min = Math.min.apply(Math, distanceArr);
 					    	}
 					    	callback(min);
+					    	 console.log(min);
+
 					    }				   
 					   
 				});
@@ -417,7 +419,6 @@ function caclulateDistance(obj,callback) {
 		};
 }
 
- console.log(min);
 
 
 function calc(num){
