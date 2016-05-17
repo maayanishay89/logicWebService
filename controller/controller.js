@@ -5,10 +5,9 @@ var Matcher = require("../model/logic/matcher");
 function calculateMatching(req,res){ 
 
    if (validation.addMatchingObject(req)) {
-   //	console.log("im in if");
 		var formula = JSON.stringify(req.body);
 	  	Matcher.calculateMatching(formula, function(result) {
-            res.status(formula).json(result);
+            res.json(result);
         });
     } else {
     	    	console.log("im in else");
@@ -16,14 +15,6 @@ function calculateMatching(req,res){
     }
 
 };
-
-// function calculateMatching(req,res){ 
-//     //console.log("im innn");
-//     var formula = JSON.stringify(req.body);
-//     Matcher.calculateMatching(formula, function(result) {
-//         res.json(result);   
-//     });
-// };
 
 exports.calculateMatching = calculateMatching;
 

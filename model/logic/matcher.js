@@ -1,6 +1,5 @@
 
 var distance = require('google-distance');
-//var matching_percent = 0;
 async = require("async");
 
 
@@ -176,7 +175,7 @@ function calculateMatching(calculateMatching,callback){
 
  function calculateRequirements(obj, callback){
 
-	var employer=[];
+	//var employer=[];
 	var total_combination=[];
 	var combination =[];
 	var grades_of_combinations = [];
@@ -231,9 +230,9 @@ function calculateMatching(calculateMatching,callback){
 			var employer_must=[];
 			var employer_or=[];
 			var employer_adv=[];
-			var grade_result = 0;
-			var total = 0;
-			var counter = 0;
+			//var grade_result = 0;
+			//var total = 0;
+			//var counter = 0;
 			
 			//data from the employer
 			for (var b = 0; b < combination[c].must.length; b++) {
