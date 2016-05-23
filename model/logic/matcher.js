@@ -66,6 +66,7 @@ function calculateMatching(calculateMatching,callback){
 		// locations
 		if(obj.job.formula.locations != 0 ){
 			caclulateDistance(obj, function(result) {
+				console.log("result: "+ result);
 				var locations_result = calc(result);
 				match.push(locations_result * (obj.job.formula.locations / 100));
 				matcher_grade.formula.locations = locations_result;
@@ -230,9 +231,7 @@ function calculateMatching(calculateMatching,callback){
 			var employer_must=[];
 			var employer_or=[];
 			var employer_adv=[];
-			//var grade_result = 0;
-			//var total = 0;
-			//var counter = 0;
+
 			
 			//data from the employer
 			for (var b = 0; b < combination[c].must.length; b++) {
@@ -372,7 +371,6 @@ function calculateMatching(calculateMatching,callback){
 	}
 
  callback(requirements_result);
- console.log(requirements_result);
 
  }
 
@@ -402,14 +400,14 @@ function caclulateDistance(obj,callback) {
 					    }
 					    else {
 					    	var stringDistance = data.distance;
-					    	var split = stringDistance.split(/[a-z]+/);
-					    	distanceArr.push(split[0]);
+					    	var sp = stringDistance.split(/[a-z]+/);
+					    		sp[0] = sp[0].replace(/,/g , "");
+					    	distanceArr.push(sp[0]);
 
-					    	 if (distanceArr.length == totalLength) {
+					    	if (distanceArr.length == totalLength) {
 						    	var min = Math.min.apply(Math, distanceArr);
 					    	}
 					    	callback(min);
-					    	 console.log(min);
 
 					    }				   
 					   
@@ -452,7 +450,7 @@ function calc(num){
 		if (num > 41) {
 				locations_result = 50;
 		}
-		return locations_result;
+		 return locations_result;
 }		
 
 
@@ -488,7 +486,6 @@ function caclulateCandidateType(obj,callback){
 		}
 
 		callback(candidate_type_result);
-		 console.log(candidate_type_result);
 
 }
 
@@ -563,7 +560,6 @@ function caclulateAcademy(obj, callback){
 
 		var academy_result = academy_cv.grade_degree_type + academy_cv.grade_academy_type;
 		callback(academy_result);
-		console.log(academy_result);
 }
 
 ////////////////////////////////////////////////////// ** Formula ** //////////////////////////////////////////////////////
@@ -577,7 +573,6 @@ function caclulateFormula(match, callback){
 		total += match[i];
 	}
 	callback(total);
-	console.log(total);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
