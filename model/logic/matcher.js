@@ -66,7 +66,7 @@ function calculateMatching(calculateMatching,callback){
 		// locations
 		if(obj.job.formula.locations != 0 ){
 			caclulateDistance(obj, function(result) {
-				console.log("result: "+ result);
+				//console.log("result: "+ result);
 				var locations_result = calc(result);
 				match.push(locations_result * (obj.job.formula.locations / 100));
 				matcher_grade.formula.locations = locations_result;
@@ -368,6 +368,10 @@ function calculateMatching(calculateMatching,callback){
 	}
 	else{
 			requirements_result.grade = 0;
+	}
+
+	if(requirements_result.grade > 100) {
+		requirements_result.grade = 100;
 	}
 
  callback(requirements_result);
