@@ -180,6 +180,7 @@ function calculateMatching(calculateMatching,callback){
 	var total_combination=[];
 	var combination =[];
 	var grades_of_combinations = [];
+	var sumTotalGrade = 0;
 
 	// data from the job seeker
 	var employee = obj.cv.requirements[0].combination;
@@ -370,6 +371,13 @@ function calculateMatching(calculateMatching,callback){
 			requirements_result.grade = 0;
 	}
 
+	for (var i = 0; i < requirements_result.details.length; i++) {
+		requirements_result.details[i].grade = Math.round(requirements_result.details[i].grade);
+		sumTotalGrade += Math.round(requirements_result.details[i].grade);
+	};
+
+	requirements_result.grade = sumTotalGrade;
+
 	if(requirements_result.grade > 100) {
 		requirements_result.grade = 100;
 	}
@@ -388,6 +396,7 @@ function caclulateDistance(obj,callback) {
 		var totalLength = destination.length * origin.length;
 		var distanceArr = [];
 		var x = 42;
+		var min;
 
 		for (var i = 0; i < destination.length ; i++) {
 			for (var j = 0; j < origin.length; j++) {
@@ -399,7 +408,7 @@ function caclulateDistance(obj,callback) {
 					  },
 					  function(err, data) {
 					    if (err) {
-					    	callback(err);
+					    	callback(42);
 					    	return console.log(err);
 					    }
 					    else {
@@ -409,12 +418,12 @@ function caclulateDistance(obj,callback) {
 					    	distanceArr.push(sp[0]);
 
 					    	if (distanceArr.length == totalLength) {
-						    	var min = Math.min.apply(Math, distanceArr);
+					    		//console.log("im in if");
+						    	min = Math.min.apply(Math, distanceArr);
+						    	console.log("min: "+ min);
+								callback(min);
 					    	}
-					    	callback(min);
-
-					    }				   
-					   
+					    }				      
 				});
 			};
 		};
@@ -431,6 +440,9 @@ function calc(num){
 		// 31 - 40 km	 -----> 60%
 		// 40 +			 -----> 50%		
 
+		if (num == undefined) {
+			locations_result = 0;
+		}
 		if (num < 6) {
 				locations_result = 100;
 		}
