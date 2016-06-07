@@ -398,35 +398,78 @@ function caclulateDistance(obj,callback) {
 		var x = 42;
 		var min;
 
-		for (var i = 0; i < destination.length ; i++) {
-			for (var j = 0; j < origin.length; j++) {
 
+        // 1st para in async.each() is the array of items
+        async.each(destination,
+            // 2nd param is the function that each item is passed to
+            function (item, callbackAsync) {
+                // Call an asynchronous function, often a save() to DB
 				distance.get(
 					  {
-					    origin: origin[j] + ', IL',
-					    destination: destination[i] + ', IL'
+					    origin: origin[0], 
+					    destination: item
 					  },
 					  function(err, data) {
 					    if (err) {
-					    	callback(42);
-					    	return console.log(err);
+					    	return callbackAsync(new Error(err));
 					    }
 					    else {
 					    	var stringDistance = data.distance;
 					    	var sp = stringDistance.split(/[a-z]+/);
-					    		sp[0] = sp[0].replace(/,/g , "");
+					    	sp[0] = sp[0].replace(/,/g , "");
 					    	distanceArr.push(sp[0]);
-
-					    	if (distanceArr.length == totalLength) {
-					    		//console.log("im in if");
-						    	min = Math.min.apply(Math, distanceArr);
-						    	console.log("min: "+ min);
-								callback(min);
-					    	}
+					    	callbackAsync();
 					    }				      
 				});
-			};
-		};
+
+            },
+            // 3rd param is the function to call when everything is done
+            function (err) {
+                if (err) {
+                    console.log("error while trying to calculate location " + err);
+                    callback(42);
+                }else {
+                    min = Math.min.apply(Math, distanceArr);
+					console.log("distance calculated successfully with  value of min: "+ min);
+					callback(min);
+                }
+            }
+        );
+
+
+
+
+		// for (var i = 0; i < destination.length ; i++) {
+		// 	for (var j = 0; j < origin.length; j++) {
+
+		// 		distance.get(
+		// 			  {
+		// 			    origin: origin[j] + ', IL',
+		// 			    destination: destination[i] + ', IL'
+		// 			  },
+		// 			  function(err, data) {
+		// 			    if (err) {
+		// 			    	callback(42);
+		// 			    	return console.log("error while trying to calculate location " + err);
+		// 			    }
+		// 			    else {
+		// 			    	var stringDistance = data.distance;
+		// 			    	var sp = stringDistance.split(/[a-z]+/);
+		// 			    		sp[0] = sp[0].replace(/,/g , "");
+		// 			    	distanceArr.push(sp[0]);
+
+		// 			    	if (distanceArr.length == totalLength) {
+		// 			    		//console.log("im in if");
+		// 				    	min = Math.min.apply(Math, distanceArr);
+		// 				    	console.log("min: "+ min);
+		// 						callback(min);
+		// 			    	}
+		// 			    }				      
+		// 		});
+		// 	};
+		// };
+
+
 }
 
 
