@@ -278,9 +278,13 @@ function calculateRequirements(obj, callback) {
                     }
                     employee[j].mode = "must";
                     employee[j].grade = (100*(employee[j].years * employer_must[i].grade) / ((grade_per_must*must)*employer_must[i].percentage/100));
-                    if ( employee[j].grade > 100){
+                    if ( employee[j].grade > 100 ){
                         employee[j].grade = 100;
                     }
+                    if ( employer_must[i].percentage == 0){
+                       employee[j].grade = 0;
+                    }
+                    console.log(employer_must[i].percentage);
                 };
             };
         };
