@@ -243,6 +243,11 @@ function calculateRequirements(obj, callback) {
             employer_must[i].grade = null;
         };
 
+        // add field "relative grade" to the employee json struct
+        for (var i = 0; i < employee.length; i++) {
+            employee[i].relative_grade = null;
+        };        
+
         var must = employer_must.length;
         var adv = employer_adv.length;
         var or = employer_or.length;
@@ -256,6 +261,7 @@ function calculateRequirements(obj, callback) {
         var grade_per_adv = temp / 2;
         var grade_per_must = ((grade_per_adv * adv) / must) + temp;
 
+      
         console.log("adv: "+ grade_per_adv);
         console.log("must: "+ grade_per_must);
 
@@ -277,6 +283,7 @@ function calculateRequirements(obj, callback) {
                         }
                     }
                     employee[j].mode = "must";
+                    employee[j].relative_grade =  (employee[j].years * employer_must[i].grade);
                     employee[j].grade = (100*(employee[j].years * employer_must[i].grade) / ((grade_per_must*must)*employer_must[i].percentage/100));
                     if ( employee[j].grade > 100 ){
                         employee[j].grade = 100;
@@ -284,12 +291,9 @@ function calculateRequirements(obj, callback) {
                     if ( employer_must[i].percentage == 0){
                        employee[j].grade = 0;
                     }
-                    console.log(employer_must[i].percentage);
                 };
             };
         };
-
-        // (grade_per_must*must)*
 
 
         for (var i = 0; i < employer_or.length; i++) {
@@ -304,6 +308,7 @@ function calculateRequirements(obj, callback) {
                         }
                     }
                     employee[j].mode = "or";
+                    employee[j].relative_grade =  employee[j].years * grade_per_adv;
                     employee[j].grade = ((employee[j].years * grade_per_adv) / grade_per_adv) *100 ;
                     if ( employee[j].grade > 100){
                         employee[j].grade = 100;
@@ -324,6 +329,7 @@ function calculateRequirements(obj, callback) {
                         }
                     }
                     employee[j].mode = "adv";
+                    employee[j].relative_grade = employee[j].years * grade_per_adv;
                     employee[j].grade = ((employee[j].years * grade_per_adv) / grade_per_adv) *100 ;
                     if ( employee[j].grade > 100){
                         employee[j].grade = 100;
@@ -337,6 +343,7 @@ function calculateRequirements(obj, callback) {
                 var comb = {
                     "name": employee[i].name,
                     "grade": employee[i].grade,
+                    "relative_grade": employee[i].relative_grade,
                     "combination_index": c
                 }
                 total_combination.push(comb);
@@ -345,15 +352,18 @@ function calculateRequirements(obj, callback) {
         }
     };
 
+   // console.log(total_combination);
 
+//
     if (total_combination.length != 0) {
         for (var j = 0; j < total_combination[total_combination.length - 1].combination_index + 1; j++) {
             var sum = 0;
             for (var i = 0; i < total_combination.length; i++) {
                 if (total_combination[i].combination_index == j) {
-                    sum += total_combination[i].grade;
+                    sum += total_combination[i].relative_grade;
                 }
             };
+            console.log("sum: "+sum);
             grades_of_combinations.push(sum);
         };
 
@@ -375,19 +385,23 @@ function calculateRequirements(obj, callback) {
         requirements_result.grade = 0;
     }
 
+
     for (var i = 0; i < requirements_result.details.length; i++) {
-        requirements_result.details[i].grade = Math.round(requirements_result.details[i].grade);
-        sumTotalGrade += Math.round(requirements_result.details[i].grade);
+       // console.log("requirements_result.details[i].grade: "+ requirements_result.details[i].grade);
+        requirements_result.details[i].relative_grade = Math.round(requirements_result.details[i].relative_grade);
+        sumTotalGrade += Math.round(requirements_result.details[i].relative_grade);
     };
 
     requirements_result.grade = sumTotalGrade;
+
+
 
     if (requirements_result.grade > 100) {
         requirements_result.grade = 100;
     }
 
 
-    console.log(requirements_result);
+    //console.log(requirements_result);
     callback(requirements_result);
 
 }
